@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
+    <!-- <script src="https://unpkg.com/gojs/release/go.js"></script> -->
+    <!-- <script src="site/release/go.js"></script> -->
+    <script src="https://unpkg.com/gojs/release/go-debug.js"></script>
+    <link rel="icon" type="image/x-icon" href="../assets/images/cit.png" />
+
+    <title>CIT Machine Learning Tool</title>
+    <link rel="stylesheet" href="../assets/styles/style_pratice.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body>
+    <div class="min-h-screen flex flex-col">
+      <!-- Navbar -->
+      <div
+        class="w-full border-b h-14 px-4 py-2 fixed z-10 top-0 left-0 right-0 bg-slate-100 flex items-center"
+      >
+        <div class="flex items-center gap-x-2">
+          <img
+            src="../assets/images/cit.png"
+            alt="this is logo CIT"
+            width="40"
+            height="40"
+          />
+          <span class="text-xl text-blue-500">CIT Machine Learning Tool</span>
+        </div>
+      </div>
+      <div class="flex p-4">
+        <!-- Aside Bar -->
+        <div
+          class="max-w-[230px] w-full fixed top-[56px] left-0 bottom-0 h-full border-r-2"
+        >
+          <nav class="flex flex-col gap-y-4 px-4 my-10">
+            <a
+              href="./documentation.html"
+              class="text-lg font-bold p-2 rounded-lg hover:bg-blue-500 hover:text-white duration-200"
+              >Documentation</a
+            >
+            <a
+              href="./knn_prediction.html"
+              class="text-lg font-bold p-2 rounded-lg hover:bg-blue-500 hover:text-white duration-200"
+              >KNN</a
+            >
+            <a
+              href=""
+              class="text-lg font-bold p-2 rounded-lg hover:bg-blue-500 hover:text-white duration-200"
+              >Decision Tree</a
+            >
+          </nav>
+        </div>
+        <!-- Side content -->
+        <div class="w-full px-4 py-2 ml-[230px] mt-[56px] font-semibold">
+          <h1 class="text-2xl uppercase text-blue-500">Decision Tree</h1>
+          <div
+            class="bg-yellow-300/80 text-orange-800 py-4 px-2 rounded-xl block w-1/2 my-2"
+          >
+            Note: The label of the Decision Tree must be end of col csv file
+          </div>
+          <div class="container flex flex-col">
+            <div class="upload-container">
+              <svg
+                class="upload-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+              >
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path
+                  d="M17 15h-4v4h4v-4zm4-11H3a2 2 0 00-2 2v12a2 2 0 002 2h8v-2H3V6h18v5h2V5a2 2 0 00-2-2z"
+                />
+              </svg>
+              <label for="csvFileInput" class="upload-label"
+                >Upload File CSV</label
+              >
+              <input
+                type="file"
+                id="csvFileInput"
+                accept=".csv"
+                class="upload-input"
+              />
+            </div>
+            <div class="table-container" id="tableContainer"></div>
+            <div class="flex items-center gap-x-4">
+              <input
+                type="radio"
+                id="gini"
+                name="attribute"
+                value="Gini"
+                checked
+              />
+              <label for="gini">Gini</label><br />
+            </div>
+            <div class="flex items-center gap-x-4">
+              <input
+                type="radio"
+                id="entropy"
+                name="attribute"
+                value="Entropy"
+              />
+              <label for="entropy">Entropy</label><br />
+            </div>
+
+            <button id="submitButton" class="submit-button">Gửi</button>
+          </div>
+          <div class="tree flex item-center gap-x-4 w-full flex-row h-screen">
+            <ol class="step flex-1 w-full"></ol>
+            <div class="container flex-1" id="myDiagramDiv"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="../unpkg/axios.min.js"></script>
+  <script src="../scripts/decision_tree.js"></script>
+</html>
