@@ -38,9 +38,10 @@ function displayCSV(csvContent) {
     th.appendChild(document.createTextNode(heading));
     // Exclude last heading from dropdown
     if (index < headings.length - 1) {
-      let conditionDefaultDropdown =
-        typeof lines[1].split(',')[index + 1] !== 'string' ? false : true;
-
+      let conditionDefaultDropdown = !isNaN(lines[1].split(',')[index])
+        ? false
+        : true;
+      console.log(conditionDefaultDropdown);
       const dropdown = createDropdown(conditionDefaultDropdown);
       th.appendChild(dropdown);
     }
@@ -71,14 +72,11 @@ function displayCSV(csvContent) {
 function createDropdown(isNumber) {
   const dropdown = document.createElement('div');
   dropdown.classList.add('dropdown');
-
   const select = document.createElement('select');
-
   const option1 = document.createElement('option');
   option1.value = 'continuous';
   option1.text = 'Liên tục';
   select.appendChild(option1);
-
   const option2 = document.createElement('option');
   option2.value = 'discrete';
   option2.text = 'Rời rạc';
@@ -90,9 +88,7 @@ function createDropdown(isNumber) {
   } else {
     select.value = 'continuous'; // Ngược lại, đặt giá trị mặc định là 'Liên tục'
   }
-
   dropdown.appendChild(select);
-
   return dropdown;
 }
 

@@ -182,56 +182,99 @@ async def decision_tree_c45(file: Annotated[UploadFile, Form()], conti_attribute
     except:
         return {"error":"yes"}
     
-import pandas as pd
-from sklearn.preprocessing import LabelEncoder
 
-def preprocess_data(data):
-    features = data.iloc[:, :-1]
-    for column in features.columns:
-        if features[column].dtype == 'object':
-            label_encoder = LabelEncoder()
-            features[column] = label_encoder.fit_transform(features[column])
-    preprocessed_data = pd.concat([features, data.iloc[:, -1]], axis=1)
-    return preprocessed_data
+def distance_continues(point1, point2, distance_type):
+    if distance_type == 'manhattan':
+        return round(np.abs(point1 - point2).sum(), 2)
+    elif distance_type == 'euclidean':
+        return round(np.sqrt(((point1 - point2) ** 2).sum()), 2)
+    else:
+        raise ValueError("Invalid distance type. Choose 'manhattan' or 'euclidean'.")
 
 
 @app.post("/knn-prediction")
 async def predict_knn(file: Annotated[UploadFile, Form()], distance_calculation: Annotated[str, Form()], k_nearest: Annotated[str, Form()]):
     try:
-        data = pd.read_csv(file.file)
-        # Preprocess the data
-        perfect_data = preprocess_data(data)
-
-        print(perfect_data)
-        # Convert data to NumPy array
-        data_np = np.array(perfect_data)
-
-        if distance_calculation == 'manhattan':
-            last_row = data_np[-1, :-1]
-            distances = np.sum(np.abs(data_np[:-1, :-1] - last_row), axis=-1)
-        elif distance_calculation == 'euclidean':
-            last_row = data_np[-1, :-1]
-            distances = np.linalg.norm(data_np[:-1, :-1].astype(float) - last_row.astype(float), axis=-1)
-            distances = np.round(distances, 3)  
-        else:
-            pass
-        data['distance'] = np.append(distances, 0)
-        X = data_np[:, :-1]
-        y = data_np[:, -1]
-
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-
-        knn_model = KNeighborsClassifier(n_neighbors=int(k_nearest), metric=distance_calculation)
-        knn_model.fit(X_train, y_train)
-
-        last_row_features = data_np[-1, :-1].reshape(1, -1)
-        knn_model.predict(X_test)
-        predicted_label =  knn_model.predict(last_row_features)[0]
-        dt_response = data.iloc[:-1, :].sort_values(by='distance', ascending=True)
+        k_nearest = int(k_nearest)
+        df = pd.read_csv(file.file)
+        # Lấy dòng cuối cùng để dự đoán
+        last_row = df.iloc[-1, :-1]  # Loại bỏ cột cuối cùng
+        distances = {}
+        print(distance_calculation)
+        for index, row in df.iloc[:-1, :-1].iterrows():  # Lặp qua tất cả các dòng trừ dòng cuối cùng và cột cuối cùng
+            distance = distance_continues(row, last_row, distance_calculation)
+            distances[index] = float(distance)  
 
 
-        print(predicted_label)
-        print(dt_response.iloc[:-1, :].sort_values(by='distance', ascending=True))
-        return    {"file":  dt_response}
+             # Sort distances dictionary by values (distances) and get top k entries
+        k_nearest_distances = dict(sorted(distances.items(), key=lambda item: item[1])[:k_nearest])
+
+        # Extract labels for the k-nearest distances
+        k_nearest_labels = {index: df.iloc[index, -1] for index in k_nearest_distances.keys()}
+        print(distances)
+
+        merged_results = {}
+        for key in k_nearest_distances.keys():
+            merged_results[key] = {
+                "distance": k_nearest_distances[key],
+                "label": k_nearest_labels.get(key)
+            }
+
+        return {
+            "data": distances,
+            "merged_results": merged_results
+        }   
     except Exception as e:
         return HTTPException(detail=str(e), status_code=500)
+    
+
+
+def calculate_distance(row, last_row):
+    p = len(row)
+    m = sum(row == last_row)
+    return (p - m) / p
+
+
+
+@app.post("/knn-prediction-nominal")
+async def predict_knn_nominal(file: Annotated[UploadFile, Form()],   k_nearest: Annotated[str, Form()]):
+    try:
+        k_nearest = int(k_nearest)  
+        df = pd.read_csv(file.file)
+        # Lấy dòng cuối cùng để dự đoán
+        last_row = df.iloc[-1, :-1]  # Loại bỏ cột cuối cùng
+        print(df)
+         # Tính toán khoảng cách và lưu trữ kết quả
+        distances = {}
+     
+        for index, row in df.iloc[:-1, :-1].iterrows():  # Lặp qua tất cả các dòng trừ dòng cuối cùng và cột cuối cùng
+            
+            distance = calculate_distance(row, last_row)
+            print(distance)
+            distances[index] = distance
+       
+         # Sort distances dictionary by values (distances) and get top k entries
+        k_nearest_distances = dict(sorted(distances.items(), key=lambda item: item[1])[:k_nearest])
+
+        # Extract labels for the k-nearest distances
+        k_nearest_labels = {index: df.iloc[index, -1] for index in k_nearest_distances.keys()}
+
+        merged_results = {}
+        for key in k_nearest_distances.keys():
+            merged_results[key] = {
+                "distance": k_nearest_distances[key],
+                "label": k_nearest_labels.get(key)
+            }
+
+        return  {
+            "data": distances,
+            "merged_results": merged_results
+
+        }
+    except Exception as e:
+        return HTTPException(detail=str(e), status_code=500)
+    
+
+@app.post("/knn-prediction-mixing")
+def prediction_mixing(file: Annotated[UploadFile, Form()],   k_nearest: Annotated[str, Form()]):
+    return 
