@@ -14,6 +14,7 @@ import { Loader } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { DialogClose } from '@radix-ui/react-dialog';
+import { createClass } from '@/apis/class.api';
 
 const formSchema = z.object({
   class_name: z.string().min(1),
@@ -28,11 +29,22 @@ const Aside = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
     setLoading(true);
-    form.setValue('class_name', '');
-    setLoading(false);
+    await createClass(values.class_name)
+      .then((res) => {
+        if (res.status === 201) {
+          window.location.reload();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        form.setValue('class_name', '');
+        setLoading(false);
+      });
   };
 
   return (

@@ -29,7 +29,10 @@ const FileUploadProcessBar = ({ files, setFiles }: FileUploadProps) => {
         {files &&
           files.map((file) => {
             return (
-              <div className='border-2 w-full p-2 flex items-center justify-between gap-14 rounded-md hover:bg-slate-200'>
+              <div
+                className='border-2 w-full p-2 flex items-center justify-between gap-14 rounded-md hover:bg-slate-200'
+                key={file.lastModified}
+              >
                 <span className='line-clamp-1'>{file.name}</span>
                 <Trash
                   className='w-5 h-5 hover:text-red-400'

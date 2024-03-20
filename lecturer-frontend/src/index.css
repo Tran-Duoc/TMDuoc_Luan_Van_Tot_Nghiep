@@ -50,10 +50,28 @@
 }
 
 @layer base {
+  h1 {
+    @apply text-2xl font-semibold;
+  }
+  h2 {
+    @apply text-xl font-medium;
+  }
+
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
   }
+  ul,
+  ol {
+    list-style: revert;
+  }
+}
+.breadscrumb > * {
+  list-style: none !important;
+}
+
+.app .ql-editor {
+  min-height: 18em;
 }

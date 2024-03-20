@@ -25,6 +25,7 @@ const UploadFile = ({ setFiles }: UploadProps) => {
         type='file'
         id='upload-file'
         className='hidden'
+        name='files'
         multiple
         onChange={(e) => handleOnFileChange(e)}
       />
