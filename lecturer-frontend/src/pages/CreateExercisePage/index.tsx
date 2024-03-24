@@ -20,7 +20,8 @@ import { ChevronLeft } from 'lucide-react';
 const CreateExercisePage = () => {
   const [descriptionValue, setDescriptionValue] = useDebounceValue('', 400);
   const [title, setTitle] = useDebounceValue('', 200);
-  const [selectedImages, setSelectedImages] = React.useState([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [selectedImages, setSelectedImages] = React.useState<any>([]);
   const param = useParams();
 
   const navigate = useNavigate();

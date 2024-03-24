@@ -1,17 +1,10 @@
-from fastapi import FastAPI, UploadFile, Form, File, HTTPException
+from fastapi import FastAPI, UploadFile, Form,   HTTPException
 import pandas as pd
-import json
-from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Annotated, List
+from typing import Annotated
 import numpy as np
 from dt_entropy import DecisionTreeC45Entropy
-from dt_gini import DecisionTreeGiniIndex
-from sklearn.preprocessing import LabelEncoder
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-from fastapi.responses import JSONResponse
+from dt_gini import DecisionTreeGiniIndex 
 
 pd.options.mode.chained_assignment = None 
 
