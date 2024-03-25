@@ -15,7 +15,8 @@ import { LoaderIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
 import React from 'react';
-const checkTypeInArray = (arr: any[]) => {
+
+export const checkTypeInArray = (arr: any[]) => {
   const arrValue: number[] = [];
   arr.map((item, index) => {
     console.log(!isNaN(Number(item)));
