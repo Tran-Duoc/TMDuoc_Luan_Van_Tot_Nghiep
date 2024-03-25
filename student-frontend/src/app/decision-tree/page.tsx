@@ -231,7 +231,7 @@ const DecisionTree = () => {
       <div>
         {fileData && value && (
           <Button disabled={loading} onClick={handlePredict}>
-            {loading && <LoaderIcon className='mr-2 h-4 w-4 animate-spin' />}
+            {loading && <LoaderIcon className='mr-2 h-4 w-4 animate-spin text-muted-foreground' />}
             Send
           </Button>
         )}
