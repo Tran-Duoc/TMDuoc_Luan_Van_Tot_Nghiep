@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import {
   KNN_PREDICTION,
   KNN_PREDICTION_CONTINUES,
@@ -14,9 +15,7 @@ import { FileArchiveIcon } from 'lucide-react';
 import { LoaderIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
-import React from 'react';
-
-export const checkTypeInArray = (arr: any[]) => {
+export const checkTypeInArray = (arr: Array<any>) => {
   const arrValue: number[] = [];
   arr.map((item, index) => {
     console.log(!isNaN(Number(item)));
