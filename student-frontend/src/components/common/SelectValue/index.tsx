@@ -22,7 +22,7 @@ export function SelectValues({ setSelect }: SelectValueProps) {
       }}
     >
       <SelectTrigger className='w-[180px]'>
-        <SelectValue placeholder='Select a Distance' />
+        <SelectValue placeholder='Criterion' />
       </SelectTrigger>
       <SelectContent position='item-aligned'>
         <SelectGroup>
