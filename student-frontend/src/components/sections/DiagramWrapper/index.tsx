@@ -52,8 +52,8 @@ export function DiagramWrapper(props: DiagramProps) {
         {
           fill: 'lightblue',
           portId: '',
-          fromLinkable: true,
-          toLinkable: true,
+          fromLinkable: false,
+          toLinkable: false,
           cursor: 'pointer',
         },
         // Shape.fill is bound to Node.data.color
