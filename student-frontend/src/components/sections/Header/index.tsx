@@ -10,21 +10,22 @@ import React from 'react';
 const token = getCookie('access_token');
 const Header = () => {
   const router = useRouter();
-  const authState = Boolean(token);
+  // const authState = Boolean(token) ;
+  const authState = true;
   const [infoStudent, setInfoStudent] = React.useState<IDecodeToken>({});
-  React.useEffect(() => {
-    if (authState && token) {
-      const student = decodeToken(token as string);
-      setInfoStudent(student);
-    } else {
-      router.push('/login');
-    }
-  }, [authState, router]);
+  // React.useEffect(() => {
+  //   if (authState && token) {
+  //     const student = decodeToken(token as string);
+  //     setInfoStudent(student);
+  //   } else {
+  //     router.push('/login');
+  //   }
+  // }, [authState, router]);
 
-  const handleLogout = () => {
-    cleanTokenToCookie();
-    router.push('/login');
-  };
+  // const handleLogout = () => {
+  //   cleanTokenToCookie();
+  //   router.push('/login');
+  // };
 
   return (
     <div className='flex items-center h-14 border-b px-4 bg-slate-100 fixed left-0 right-0 top-0 z-10 justify-between'>
@@ -34,7 +35,7 @@ const Header = () => {
         width={50}
         height={50}
       />
-      <div className='flex items-center gap-x-2'>
+      {/* <div className='flex items-center gap-x-2'>
         {authState ? (
           <>
             <p>{infoStudent.student_code}</p>
@@ -53,7 +54,7 @@ const Header = () => {
             </Button>
           </>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

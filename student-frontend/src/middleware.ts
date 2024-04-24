@@ -2,7 +2,8 @@ import { NextResponse, NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 
 export function middleware(request: NextRequest) {
-  const auth = cookies().get('access_token')?.value;
+  // const auth = cookies().get('access_token')?.value;
+  const auth = true;
   const isIncludes = ['/login', '/register'];
   if (!Boolean(auth)) {
     return NextResponse.redirect(new URL('/login', request.url));

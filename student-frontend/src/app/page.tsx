@@ -13,44 +13,44 @@ const Header = dynamic(() => import('@/components/sections/Header'), {
 import BeatLoader from 'react-spinners/BeatLoader';
 import ClassCard from '@/components/common/ClassCard';
 
-interface IClassItem {
-  class_id: string;
-  _id: string;
-  class_name: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
+// interface IClassItem {
+//   class_id: string;
+//   _id: string;
+//   class_name: string;
+//   createdAt: string;
+//   updatedAt: string;
+//   __v: number;
+// }
 
-const SlugName = (name: string) => {
-  return name.split(' ').join('+');
-};
+// const SlugName = (name: string) => {
+//   return name.split(' ').join('+');
+// };
 
 export default function Home() {
-  const [student_id] = useRecoilState(studentIdState);
-  const [loading, setLoading] = React.useState(false);
+  // const [student_id] = useRecoilState(studentIdState);
+  // const [loading, setLoading] = React.useState(false);
 
-  const [courses, setCourses] = React.useState([]);
-  React.useEffect(() => {
-    setLoading(true);
-    getCourseOfStudent(student_id)
-      .then((res) => {
-        console.log(res);
-        if (res.status === 200) {
-          setCourses(res.data.data.classes);
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [student_id]);
+  // const [courses, setCourses] = React.useState([]);
+  // React.useEffect(() => {
+  //   setLoading(true);
+  //   getCourseOfStudent(student_id)
+  //     .then((res) => {
+  //       console.log(res);
+  //       if (res.status === 200) {
+  //         setCourses(res.data.data.classes);
+  //       }
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  // }, [student_id]);
 
   return (
     <div className='flex flex-col'>
       <Header />
       <AsideLeft />
       <div className='ml-56 p-2 mt-14 h-full grid grid-cols-5'>
-        {!loading && courses.length > 0 ? (
+        {/* {!loading && courses.length > 0 ? (
           courses.map((course: IClassItem) => {
             console.log(course);
             return (
@@ -67,7 +67,8 @@ export default function Home() {
           <div className='w-full '>
             <BeatLoader color='#36d7b7' />
           </div>
-        )}
+        )} */}
+        coming soon
       </div>
     </div>
   );
