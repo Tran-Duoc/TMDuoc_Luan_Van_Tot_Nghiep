@@ -1,8 +1,13 @@
-import { Book, AlignStartVerticalIcon, TreeDeciduousIcon } from 'lucide-react';
+import {
+  Book,
+  AlignStartVerticalIcon,
+  TreeDeciduousIcon,
+  TentIcon,
+} from 'lucide-react';
 
 export const NAV_ITEMS = [
   {
-    name: 'Documentation',
+    name: 'All Course',
     path: '/',
     icon: <Book className='w-4 h-4' />,
   },
@@ -16,9 +21,14 @@ export const NAV_ITEMS = [
     path: '/decision-tree',
     icon: <TreeDeciduousIcon className='w-4 h-4' />,
   },
+  // {
+  //   name: 'Examination',
+  //   path: '/exam',
+  //   icon: <TreeDeciduousIcon className='w-4 h-4' />,
+  // },
   {
-    name: 'Examination',
-    path: '/exam',
-    icon: <TreeDeciduousIcon className='w-4 h-4' />,
+    name: 'Naive Bayes',
+    path: '/naive-bayes',
+    icon: <TentIcon className='w-4 h-4' />,
   },
 ];

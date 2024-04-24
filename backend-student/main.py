@@ -5,7 +5,7 @@ from typing import Annotated
 import numpy as np
 from dt_entropy import DecisionTreeC45Entropy
 from dt_gini import DecisionTreeGiniIndex 
-
+from fastapi.responses import JSONResponse
 pd.options.mode.chained_assignment = None 
 
 def decision_tree_to_dict(node, attribute_mapping, parent=None, th=None):
@@ -268,6 +268,84 @@ async def predict_knn_nominal(file: Annotated[UploadFile, Form()],   k_nearest: 
         return HTTPException(detail=str(e), status_code=500)
     
 
-@app.post("/knn-prediction-mixing")
-def prediction_mixing(file: Annotated[UploadFile, Form()],   k_nearest: Annotated[str, Form()]):
-    return 
+# @app.post("/knn-prediction-mixing")
+# def prediction_mixing(file: Annotated[UploadFile, Form()],   k_nearest: Annotated[str, Form()]):
+#     return 
+# def calculate_label_probabilities(df, label_column=-1):
+#     label_counts = df.iloc[:, label_column].value_counts()
+#     total_samples = len(df)
+#     label_probabilities = {}
+#     for label, count in label_counts.items():
+#         label_probabilities[label] = {
+#             "probabilities": count / total_samples
+#         }
+#     return label_probabilities
+
+def calculate_probabilities(df: pd.DataFrame, target: str):
+    # Tạo một từ điển để lưu trữ xác suất của từng nhãn
+    probabilities = {}
+    
+    # Lấy tên cột cuối cùng
+    last_column_name = df.columns[-1]
+    
+    # Lấy các giá trị duy nhất của nhãn
+    unique_labels = df[last_column_name].unique()
+        
+    # Tính xác suất tổng hợp của X với Laplace correction
+    p_x = 1
+    for label in unique_labels:
+        label_data = df[df.iloc[:, -1] == label]
+        p_x_given_label = 1
+        for feature in target.split():
+            count = (label_data.iloc[:, :-1] == feature).sum().sum() + 1  # Laplace correction
+            p_x_given_label *= count / (len(label_data) + len(df.iloc[:, :-1].columns))
+        p_label = len(label_data) / len(df)
+        p_x += p_x_given_label * p_label
+
+    # Tính xác suất của mỗi nhãn dựa trên xác suất tổng hợp của X
+    for label in unique_labels:
+        label_data = df[df.iloc[:, -1] == label]
+        p_label_given_x = 0
+        p_x_given_label = 1
+        for feature in target.split():
+            count = (label_data.iloc[:, :-1] == feature).sum().sum() + 1  # Laplace correction
+            p_x_given_label *= count / (len(label_data) + len(df.iloc[:, :-1].columns))
+        p_label = len(label_data) / len(df)
+        p_label_given_x = (p_x_given_label * p_label) / p_x
+        probabilities[label] = p_label_given_x
+
+    print(p_x)
+    return probabilities
+
+
+
+@app.post("/naive_bayes")
+async def naive_bayes(file: Annotated[UploadFile, Form()],):
+    try:
+        # Đọc dữ liệu từ tệp CSV
+        df = pd.read_csv(file.file)
+        # Loại bỏ dòng đầu tiên chứa tên các giá trị
+        
+        # Loại bỏ dòng cuối cùng với giá trị cuối cùng là dấu "?"
+        df = df.iloc[:-1]
+        print(df)
+
+        # Lấy dòng dữ liệu cuối cùng làm target
+        target = df.iloc[-1, :-1].values
+     
+     
+        # Tính toán xác suất của từng nhãn
+        probabilities = calculate_probabilities(df, " ".join(target))
+        
+        # Tính xác suất tổng hợp
+        total_probability = sum(probabilities.values())
+        
+        # Tính xác suất của từng nhãn dựa trên tổng hợp
+        label_results = {label: prob / total_probability for label, prob in probabilities.items()}
+        
+        return  JSONResponse(label_results)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error occurred: {str(e)}")
+    
+
+ 

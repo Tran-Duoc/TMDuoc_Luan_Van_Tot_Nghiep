@@ -1,5 +1,8 @@
+import { setCookie, deleteCookie } from 'cookies-next';
+import { JwtPayload, jwtDecode } from 'jwt-decode';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import moment from 'moment';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -23,4 +26,28 @@ export const parseCSV = (csvText: string) => {
   }
 
   return parsedData;
+};
+
+export const setTokenToCookie = (token: string) => {
+  return setCookie('access_token', token);
+};
+
+export const cleanTokenToCookie = () => {
+  return deleteCookie('access_token');
+};
+
+export interface IDecodeToken extends JwtPayload {
+  student_code?: string;
+}
+
+export const decodeToken = (token: string = ''): IDecodeToken => {
+  return jwtDecode(token);
+};
+
+export const saveIdStudentToCookie = (student_id: string) => {
+  return setCookie('student_id', student_id);
+};
+
+export const formatDate = (createdAt: string) => {
+  return moment(createdAt).format('DD [thg] MM, YYYY');
 };

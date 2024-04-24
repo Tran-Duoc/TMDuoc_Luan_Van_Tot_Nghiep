@@ -50,10 +50,11 @@ const fileController = {
   createExercise: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const files = req.files as []
-      let filesPath: string[] = []
+      const filesPath: string[] = []
       const { class_id, title, description } = req.body
-      const findFileById: any = await fileModel.findOne({ class_id: class_id })
-      findFileById ? (filesPath = [...findFileById.files]) : []
+
+      // const findFileById: any = await fileModel.findOne({ class_id: class_id })
+
       if (!files) {
         throw new ApiError(StatusCodes.BAD_REQUEST, 'No files')
       }
@@ -73,6 +74,25 @@ const fileController = {
         success: true,
         message: 'Created files successfully',
         response: newFiles
+      })
+    } catch (error) {
+      next(error)
+    }
+  },
+  getFilesById: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params
+      console.table(id)
+      const exitFileById = await fileModel.findById(id).sort({ createdAt: -1 })
+      if (!exitFileById) {
+        throw new ApiError(StatusCodes.NOT_FOUND, 'File not found')
+      }
+      console.log(exitFileById)
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: 'Get file by id successfully',
+        exercises: exitFileById
       })
     } catch (error) {
       next(error)

@@ -6,6 +6,10 @@ import { getAllClass } from '@/apis/class.api';
 import { IClass } from '@/interfaces/class.interface';
 import { LoadingFillPage } from '@/components/common';
 
+export const slugParam = (param: string) => {
+  return param.split(' ').join('-').toLocaleLowerCase();
+};
+
 const MainPage = () => {
   const [classes, setClasses] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
@@ -34,14 +38,16 @@ const MainPage = () => {
             return (
               <ClassDetailLink
                 key={className._id}
-                path={`/class-detail/${className._id}`}
+                path={`/class-detail/${className._id}?q=${slugParam(
+                  className.class_name
+                )}`}
                 className={className.class_name}
               />
             );
           })}
         </div>
       )}
-      <div className='grid grid-cols-4 gap-x-3 p-4'></div>
+      {/* <div className='grid grid-cols-4 gap-x-3 p-4'></div> */}
     </MainLayout>
   );
 };

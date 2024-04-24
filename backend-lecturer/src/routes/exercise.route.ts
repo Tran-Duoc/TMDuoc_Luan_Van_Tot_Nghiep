@@ -7,6 +7,7 @@ const router = Router()
 
 router.get('/exercise/:id', fileController.getExercise)
 router.get('/:id', fileController.getFilesByClassId)
+router.get('/exercise-item/:id', fileController.getFilesById)
 
 router.post('/', upload.array('files', 6), fileController.createExercise)
 

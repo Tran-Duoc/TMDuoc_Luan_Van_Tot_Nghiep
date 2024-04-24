@@ -1,15 +1,15 @@
 import { model, Schema } from 'mongoose'
 
+import classModel from './class.model'
+
 const courseModel = new Schema(
   {
     student_id: {
       type: Schema.Types.ObjectId,
-      ref: 'studentModel'
+      ref: 'studentModel',
+      default: ''
     },
-    exercises: {
-      type: Schema.Types.ObjectId,
-      ref: 'fileModel'
-    }
+    classes: { type: Schema.Types.ObjectId, default: '', ref: 'classModel' }
   },
   {
     timestamps: true
