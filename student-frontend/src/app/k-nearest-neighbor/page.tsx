@@ -83,7 +83,7 @@ const KNearestNearest = () => {
       file: fileData as File,
       k_nearest: kNearest,
     };
-
+    console.log(arrValue);
     if (arrValue.length === 0) {
       await KNN_PREDICTION(dataDiscrete)
         .then((response) => {
@@ -108,7 +108,7 @@ const KNearestNearest = () => {
         .finally(() => {
           setIsLoading(false);
         });
-    } else if (arrValue.length === 4 && selectValue) {
+    } else if (arrValue.length > 0 && selectValue) {
       const dataContiguous: KnnPredictionType = {
         file: fileData as File,
         k_nearest: kNearest,
