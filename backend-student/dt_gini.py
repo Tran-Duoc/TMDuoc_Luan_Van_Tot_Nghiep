@@ -42,7 +42,7 @@ class DecisionTreeGiniIndex:
         gini_index = 1 - sum(p * p for p in probabilities)
         if pr:
             if threshold is None:
-                detail_stepp = "Gini Index " + str(value) + " :" + str(round(gini_index, 2))
+                detail_stepp = "Gini Index " + str(value) + ": " + str(round(gini_index, 2))
                 self.step.append(detail_stepp)
             else:
                 detail_stepp = "Gini Index " + str(value) + " " + str(threshold) + " :" + str(round(gini_index, 2))
