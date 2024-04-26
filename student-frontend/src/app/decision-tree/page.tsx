@@ -168,7 +168,7 @@ const DecisionTree = () => {
       type: value as string,
       conti_attribute: arrValue,
     };
-    console.log(data);
+
     setLoading(true);
     await DECISION_TREE_PREDICTION(data)
       .then((response) => {
