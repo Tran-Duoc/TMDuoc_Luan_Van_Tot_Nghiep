@@ -79,10 +79,17 @@ class DecisionTreeGiniIndex:
             if attribute not in used_attributes:
                 attrs += str(self.attribute_name_dict.get(attribute))
                 attrs += " "
+        
         step_buoc = "Bước " + str(self.buoc)
         step_gini = "Tính Gini Index cho các thuộc tính: " + str(attrs)
         self.step.append(step_buoc)
         self.step.append(step_gini)
+        
+        # Tính Gini Index cho tập nhãn ban đầu
+        total_gini = self.gini_index(y, "tổng", pr=False)
+        step_total_gini = "Gini Index tổng của tập dữ liệu: " + str(round(total_gini, 2))
+        self.step.append(step_total_gini)
+        
         best_gain = 1
         best_attribute = None
         best_threshold = None

@@ -89,12 +89,17 @@ class DecisionTreeC45Entropy:
             if attribute not in used_attributes:
                 attrs += str(self.attribute_name_dict.get(attribute))
                 attrs += " "
-        # print("Buoc: ", self.buoc)
-        # print("Tính gini cho các thuộc tính: ", attrs)
+        
         step_buoc = "Bước " + str(self.buoc)
         step_gini = "Tính entropy cho các thuộc tính: " + str(attrs)
         self.step.append(step_buoc)
         self.step.append(step_gini)
+        
+        # Tính entropy cho tập nhãn ban đầu
+        total_entropy = self.entropy(y, "tổng", pr=False)
+        step_total_entropy = "Entropy tổng của tập dữ liệu: " + str(round(total_entropy, 2))
+        self.step.append(step_total_entropy)
+        
         best_gain = 0
         best_attribute = None
         best_threshold = None
@@ -107,12 +112,16 @@ class DecisionTreeC45Entropy:
                     values = set(X[:, attribute])
                     for value in values:
                         gain = self.information_gain(X, y, attribute, threshold=value)
+                        step_gain = "Information Gain của " + str(self.attribute_name_dict.get(attribute)) + " (threshold=" + str(value) + "): " + str(round(gain, 2))
+                        self.step.append(step_gain)
                         if gain > best_gain:
                             best_gain = gain
                             best_attribute = attribute
                             best_threshold = value
                 else:
                     gain = self.information_gain(X, y, attribute)
+                    step_gain = "Information Gain của " + str(self.attribute_name_dict.get(attribute)) + ": " + str(round(gain, 2))
+                    self.step.append(step_gain)
                     if gain > best_gain:
                         best_gain = gain
                         best_attribute = attribute
