@@ -62,6 +62,7 @@ export function DiagramWrapper(props: DiagramProps) {
           fromLinkable: false,
           toLinkable: false,
           cursor: "pointer",
+          minSize: new go.Size(80, 40),
         },
         // Shape.fill is bound to Node.data.color
         new go.Binding("fill", "category", (category) =>
@@ -70,7 +71,14 @@ export function DiagramWrapper(props: DiagramProps) {
       ),
       $(
         go.TextBlock,
-        { margin: 8, editable: true, font: "400 .875rem Roboto, sans-serif" }, // some room around the text
+        {
+          margin: 8,
+          editable: true,
+          font: "600 .875rem Roboto, sans-serif",
+          textAlign: "center",
+          wrap: go.TextBlock.WrapFit,
+          maxSize: new go.Size(150, NaN),
+        },
         new go.Binding("text").makeTwoWay()
       )
     );
@@ -79,16 +87,16 @@ export function DiagramWrapper(props: DiagramProps) {
       go.Link,
       new go.Binding("relinkableFrom", "canRelink").ofModel(),
       new go.Binding("relinkableTo", "canRelink").ofModel(),
-      $(go.Shape), // this is the link shape (the line)
-      $(go.Shape, { toArrow: "Standard" }), // this is an arrowhead
+      $(go.Shape, { strokeWidth: 1.5 }), // đường nối
+      $(go.Shape, { toArrow: "Standard", strokeWidth: 1.5 }), // mũi tên
       $(
-        go.TextBlock, // this is a Link label
+        go.TextBlock, // label trên cạnh
         {
           segmentOffset: new go.Point(0, -10),
           segmentOrientation: go.Link.OrientUpright,
-          font: "400 .875rem Roboto, sans-serif",
+          font: "500 .875rem Roboto, sans-serif",
           background: "white",
-          margin: 2,
+          margin: 3,
         },
         new go.Binding("text", "label")
       )
