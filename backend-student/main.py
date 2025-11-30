@@ -37,6 +37,10 @@ def decision_tree_to_dict(node, attribute_mapping, parent=None, th=None):
 
     # Thêm thuộc tính label
     node_dict["label"] = node.label
+    
+    # Thêm thông tin số mẫu và phân bố nhãn
+    node_dict["samples"] = node.samples
+    node_dict["label_counts"] = node.label_counts
 
     # Tạo danh sách các nút con
     children = []
@@ -67,17 +71,34 @@ def convert_numpy_int64_to_int(x):
     Đối tượng int
   """
 
-  if isinstance(x, np.int64):
+  if isinstance(x, (np.int64, np.int32, np.int_)):
     return int(x)
+  elif isinstance(x, dict):
+    # Convert dict keys and values
+    return {str(k): int(v) if isinstance(v, (np.int64, np.int32, np.int_)) else v for k, v in x.items()}
   else:
     return x
 
 class NodeJson:
-    def __init__(self, split_attribute, label, order, parent):
+    def __init__(self, split_attribute, label, order, parent, samples=0, label_counts=None):
         self.split_attribute=split_attribute
         self.label=label
         self.order=order
         self.parent=parent
+        self.samples=samples
+        self.label_counts=label_counts or {}
+    
+    def to_dict(self):
+        """Convert NodeJson to dictionary for JSON serialization"""
+        return {
+            "split_attribute": self.split_attribute,
+            "label": self.label,
+            "order": self.order,
+            "parent": self.parent,
+            "samples": self.samples,
+            "label_counts": self.label_counts
+        }
+    
     def print_info(self):
         print(type(self.order))
         print(type(self.label))
@@ -104,10 +125,18 @@ def add_to_arr(arr, json_tree):
         order = node['value']
         if node['threshold'] != None:
             order = str(order) + str(node['threshold'])
+        
+        # Convert label_counts properly
+        label_counts = node.get('label_counts', {})
+        if label_counts:
+            label_counts = convert_numpy_int64_to_int(label_counts)
+        
         arr.append(NodeJson(convert_numpy_int64_to_int(node['attribute']), 
                             convert_numpy_int64_to_int(node['label']), 
                             convert_numpy_int64_to_int(order), 
-                            parent=convert_numpy_int64_to_int(parent)))
+                            parent=convert_numpy_int64_to_int(parent),
+                            samples=convert_numpy_int64_to_int(node.get('samples', 0)),
+                            label_counts=label_counts))
         for child in reversed(node['children']):  # Đảo ngược thứ tự để duyệt theo thứ tự đúng
             stack.append((child, node['attribute']))
 
@@ -153,7 +182,18 @@ async def decision_tree_c45(file: Annotated[UploadFile, Form()], conti_attribute
             arr = []
             add_to_arr(arr,decision_tree_dict)
             steps = tree.get_step()
-            return {"message":arr,
+            # Convert NodeJson objects to dict
+            arr_dict = [node.to_dict() for node in arr]
+            # Debug: print nodes to check data
+            print(f"Total nodes: {len(arr_dict)}")
+            if arr_dict:
+                print("First node:", arr_dict[0])
+                # Find and print leaf nodes
+                leaf_nodes = [n for n in arr_dict if n['label'] is not None]
+                if leaf_nodes:
+                    print(f"Total leaf nodes: {len(leaf_nodes)}")
+                    print("First leaf:", leaf_nodes[0])
+            return {"message":arr_dict,
                     "steps":steps,
                     "error":"no"}
         else:
@@ -169,7 +209,18 @@ async def decision_tree_c45(file: Annotated[UploadFile, Form()], conti_attribute
             # print(steps)
             # print(decision_tree_dict)
             # print(tree.get_pratice())
-            return {"message": arr,
+            # Convert NodeJson objects to dict
+            arr_dict = [node.to_dict() for node in arr]
+            # Debug: print nodes to check data
+            print(f"Total nodes: {len(arr_dict)}")
+            if arr_dict:
+                print("First node:", arr_dict[0])
+                # Find and print leaf nodes
+                leaf_nodes = [n for n in arr_dict if n['label'] is not None]
+                if leaf_nodes:
+                    print(f"Total leaf nodes: {len(leaf_nodes)}")
+                    print("First leaf:", leaf_nodes[0])
+            return {"message": arr_dict,
                     "steps":steps,
                     "error":"no"}
     except:
